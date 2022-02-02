@@ -1,0 +1,116 @@
+# User
+- endpunkt: /user
+  methode: GET
+  beschreibung: Liste aller nutzer
+  parameter:
+    - filter: name # optional
+  rückgabewerte: [
+    {
+      "name": "str",
+      "id": "str"
+    }
+  ]
+
+- endpunkt: /user/{id}
+  methode: GET
+  beschreibung: Liefert einen Nutzer.
+  rückgabewerte: {
+    "name": "str",
+    "id": "str",
+    "lists": [
+        "id"
+    ]
+  }
+
+- endpunkt: /user/{id}
+  methode: DELETE
+  beschreibung: Löscht einen Nutzer.
+
+- endpunkt: /user
+  methode: POST
+  beschreibung: Erstellen eines Nutzers
+  body: {
+    "name": "str"
+  }
+  rückgabewerte: {
+    "name": "str",
+    "id": "str"
+  }
+
+# List
+- endpunkt: /user/{id}/list/{id}
+  methode: GET
+  beschreibung: Liefert alle Einträge einer Todo-Liste zurück.
+  rückgabewerte: {
+    "id": "str",
+    "name": "str",
+    "owner": "id",
+    "entry": [
+      {
+        "id": "str",
+        "name": "str",
+        "description": "str"
+      }
+    ]
+  }
+
+- endpunkt: /user/{id}/list/{id}
+  methode: DELETE
+  beschreibung: Löscht die angegebene Liste.
+
+- endpunkt: /user/{id}/list
+  methode: POST
+  beschreibung: Erstellt eine neue Liste.
+  body: {
+    "name": "str",
+  }
+  rückgabewerte: {
+    "id": "str",
+    "name": "str"
+  }
+
+- endpunkt: /user/{id}/list/{id}
+  methode: PUT
+  beschreibung: Aktualisiert den Namen einer Liste.
+  body: {
+    "name": "str",
+  }
+  rückgabewerte: {
+    "id": "str",
+    "name": "str"
+  }
+
+- endpunkt: /user/{id}/list/{id}/entry
+  methode: POST
+  beschreibung: Fügt einen Eintrag zu einer Liste hinzu.
+  body: {
+    "name": "str",
+    "description": "str",
+  }
+  rückgabewerte: {
+    "id": "str",
+    "name": "str",
+    "description": "str",
+  }
+
+- endpunkt: /user/{id}/list/{id}/entry/{id}
+  methode: GET
+  beschreibung: Liefert einen Eintrag in einer Liste.
+  rückgabewerte: {
+    "id": "str",
+    "name": "str",
+    "description": "str",
+  }
+
+- endpunkt: /user/{id}/list/{id}/entry/{id}
+  methode: POST
+  beschreibung: Aktualisiert einen Eintrag in einer Liste.
+  body: {
+    "name": "str",
+    "description": "str",
+  }
+  rückgabewerte: {
+    "id": "str",
+    "name": "str",
+    "description": "str",
+  }

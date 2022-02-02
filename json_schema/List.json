@@ -1,0 +1,12 @@
+{
+  "id": "str",
+  "name": "str",
+  "owner": "id",
+  "entry": [
+    {
+      "id": "str",
+      "name": "str",
+      "description":"str"
+    }
+  ]
+}
