@@ -1,0 +1,240 @@
+openapi: 3.0.3
+info:
+  title: TODO Server
+  description: TODO Server
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /todo-list/{list_id}:
+    get:
+      description: Liefert alle Einträge einer Todo-Liste zurück.
+      parameters:
+        - name: list_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/List'
+    delete:
+      description: Delete a list.
+      parameters:
+        - name: list_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Object deleted
+        404:
+          description: Not found (or already deleted)
+
+  /todo-list:
+    post:
+      description: Fügt eine neue Todo-Liste hinzu.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/List'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/List_no_ID'
+
+  /todo-list/{list_id}/entry:
+    post:
+      description: Fügt einen Eintrag zu einer bestehenden Todo-Liste hinzu.
+      parameters:
+        - name: list_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Entry_no_ID'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+
+  /todo-list/{list_id}/entry/{entry_id}:
+    put:
+      description: Aktualisiert einen bestehenden Eintrag.
+      parameters:
+        - name: list_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: entry_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Entry'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+
+    delete:
+      description: Löscht einen einzelnen Eintrag einer Todo-Liste.
+      parameters:
+        - name: list_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: entry_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Object deleted
+        404:
+          description: Not found (or already deleted)
+
+  /user:
+    get:
+      description: Liefert eine Liste aller Benutzer zurück.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    post:
+      description: Fügt einen neuen Benutzer hinzu.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User_no_ID'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /user/{user_id}:
+    delete:
+
+      description: Löscht einen Benutzer.
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Object deleted
+        404:
+          description: Not found (or already deleted)
+
+components:
+  schemas:
+    List:
+      type: object
+      required:
+        - id
+        - name
+      description: A TODO List
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+        description:
+          type: string
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entry'
+    List_no_ID:
+      type: object
+      description: A TODO List without an id.
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    Entry:
+      type: object
+      description: An entry in a todo list.
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        user:
+          type: string
+          description: The User ID
+    Entry_no_ID:
+      type: object
+      description: An entry in a todo list without id.
+      required:
+        - name
+        - user_id
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        user_id:
+          type: string
+    User:
+      type: object
+      required:
+        - name
+        - id
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+    User_no_ID:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
