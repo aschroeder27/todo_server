@@ -15,24 +15,27 @@ todo_lists = {}
 users = {}
 
 
-@app.route("/todo-list", methods=['POST'])
+@app.route("/todo-list", methods=['POST', 'GET'])
 def create_list():
     global todo_lists
-    body = request.get_json()
-    list_id = create_list_id()
-    logging.info(f"Created new List, id = {list_id}")
-    body["id"] = list_id
+    if request.method == "POST":
+        body = request.get_json()
+        list_id = create_list_id()
+        logging.info(f"Created new List, id = {list_id}")
+        body["id"] = list_id
 
-    if "entries" not in body:
-        body["entries"] = {}
+        if "entries" not in body:
+            body["entries"] = {}
 
-    if "name" not in body:
-        abort(400)
+        if "name" not in body:
+            abort(400)
 
-    todo_lists[list_id] = body
-    save_data()
+        todo_lists[list_id] = body
+        save_data()
 
-    return body
+        return body
+    else:
+        return jsonify(list(todo_lists.values()))
 
 
 @app.route("/todo-list/<list_id>", methods=['GET', 'DELETE'])
