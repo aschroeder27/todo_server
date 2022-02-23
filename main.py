@@ -15,6 +15,14 @@ todo_lists = {}
 users = {}
 
 
+@app.after_request
+def apply_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET,POST,PUT,DELETE'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    return response
+
+
 @app.route("/todo-list", methods=['POST', 'GET'])
 def create_list():
     global todo_lists
@@ -35,14 +43,18 @@ def create_list():
 
         return body
     else:
-        return jsonify(list(todo_lists.values()))
+        return jsonify([get_list(ls["id"], False) for ls in todo_lists.values()])
 
 
 @app.route("/todo-list/<list_id>", methods=['GET', 'DELETE'])
-def get_list(list_id):
+def get_list(list_id, called_ext=True):
     global todo_lists
-    if request.method == 'GET':
-        return todo_lists[list_id]
+    if request.method == 'GET' or not called_ext:
+        l: dict = todo_lists[list_id].copy()
+
+        l["entries"] = list(l["entries"].values())
+
+        return l
     elif request.method == 'DELETE':
         popped = todo_lists.pop(list_id, None)
         if popped is None:

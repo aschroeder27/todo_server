@@ -6,6 +6,28 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
+  /todo-list:
+    get:
+      description: Liefert alle Todo-Listen zurück.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/List'
+    post:
+      description: Fügt eine neue Todo-Liste hinzu.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/List'
+
   /todo-list/{list_id}:
     get:
       description: Liefert alle Einträge einer Todo-Liste zurück.
@@ -36,16 +58,6 @@ paths:
         404:
           description: Not found (or already deleted)
 
-  /todo-list:
-    post:
-      description: Fügt eine neue Todo-Liste hinzu.
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/List'
       requestBody:
         required: true
         content:
