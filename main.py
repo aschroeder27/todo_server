@@ -1,7 +1,7 @@
 import json
 import logging
 import os.path
-import random
+import uuid
 
 from flask import Flask, request, abort, jsonify
 
@@ -69,9 +69,7 @@ def get_list(list_id, called_ext=True):
 def add_entry(list_id):
     global todo_lists
     body: dict = request.get_json()
-    if "user" not in body.keys():
-        abort(406)
-    if not body["user"] in users.keys():
+    if "user_id" not in body.keys() or not body["user_id"] in users.keys():
         abort(406)
     body["id"] = create_entry_id(list_id)
     logging.info(f"Added entry {body['id']} to list {list_id}")
@@ -141,6 +139,7 @@ def load_data():
     except:
         logging.error(f"Unable to read '{file}'")
         todo_lists = {}
+        save_data()
     logging.info(f"Loaded lists: {todo_lists}")
 
 
@@ -159,7 +158,8 @@ def load_users():
                 users = json.loads(lines)
     except:
         logging.error(f"Unable to read '{users_file}'")
-        users_file = {}
+        users = {}
+        save_users()
     logging.info(f"Loaded users: {users}")
 
 
@@ -170,33 +170,28 @@ def save_users():
 
 
 def create_list_id():
-    list_id = _int32_to_id()
+    list_id = generate_id()
     while list_id in todo_lists.keys():
-        list_id = _int32_to_id()
+        list_id = generate_id()
     return list_id
 
 
 def create_entry_id(list_id: str):
-    entry_id = _int32_to_id()
+    entry_id = generate_id()
     while entry_id in todo_lists[list_id]["entries"].keys():
-        entry_id = _int32_to_id()
+        entry_id = generate_id()
     return entry_id
 
 
 def create_user_id():
-    user_id = _int32_to_id()
+    user_id = generate_id()
     while user_id in users.keys():
-        user_id = _int32_to_id()
+        user_id = generate_id()
     return user_id
 
 
-def _int32_to_id(n=3):
-    chars = "0123456789ACEFHJKLMNPRTUVWXY"
-    rand = random.Random()
-    result = ""
-    for _ in range(n):
-        result += chars[rand.randint(0, len(chars) - 1)]
-    return result
+def generate_id():
+    return str(uuid.uuid4())
 
 
 if __name__ == '__main__':
